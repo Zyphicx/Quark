@@ -1,17 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
+#include "token.h"
 
-#define MAX_TOKEN_VALUE 32
-
-enum token_type {IF, WHILE, L_PAREN, R_PAREN, IDENTIFIER};
-
-typedef struct token Token;
-
-struct token{
-	enum token_type type;
-	char value[MAX_TOKEN_VALUE];
-	Token *next;
-};
+struct token_list{
+	Token *token;
+	size_t next;
+	size_t size;
+}
 
 int main(){
 	printf("%d\n", str_contains("Heyo", "Heyoa"));
