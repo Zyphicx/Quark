@@ -8,11 +8,13 @@ struct token_list{
     size_t next;
 }
 
-void new_list(Token_List *list){
+void new_list(Token_List *list, int init_size){
     list = (Token_List *)malloc(sizeof(Token_List));
     list->tokens = malloc(sizeof(Token));
-    list->size = 1;
+    list->size = init_size;
     list->next = 0;
 }
 
-void add_entry
+void add_entry(Token_List *list){
+    if(list->next == (list->size - 1))
+}
