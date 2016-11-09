@@ -4,8 +4,7 @@
 #define MAX_LINE 512
 
 void lex(FILE *file, Token_List *list);
-Token *get_next_token(FILE *file);
-void lex(FILE *file, Token_List *list);
+Token *get_next_token(char *line);
 int str_contains(char *s, char *val);
 
 int main(int argc, char *argv[]){
@@ -26,25 +25,30 @@ int main(int argc, char *argv[]){
 void lex(FILE *file, Token_List *list){
 	int linecount = 0;
 	char line[MAX_LINE]; //It will end with a \0, so it won't read from old lines
-	fgets(line, MAX_LINE - 1, file);
-	printf("%s\n", line);
+	while(1){
+		if(fgets(line, MAX_LINE - 1, file) == NULL){
+			fprintf(stderr, "Error with reading line");
+			exit(1);
+		}
+		printf("%s\n", line);
+		get_next_token(line);
+	}
 	/*if(str_contains(file, "for")){
 		printf("It does contain for");
 	}*/
 }
 
-Token *get_next_token(FILE *file){
-	register char c;
-	Token *token = malloc(sizeof(Token));
+Token *get_next_token(char *line){
+	Token token;
 
-	while((c = getchar()) != EOF){
-	}
-	if(c == EOF){
-		free(token);
-	}
+	if(str_contains(line, "Because"))
+		printf("Yayo!\n");
 }
 
 int str_contains(char *s, char *val){
+	while(*s == ' ' || *s == '\t')
+		++s;
+
 	while(*s == *val && *val){
 		s++; 
 		val++;
