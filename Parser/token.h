@@ -1,26 +1,22 @@
+#include <stddef.h>
 #define MAX_TOKEN_VALUE 32
 
 enum token_type {IF, WHILE, L_PAREN, R_PAREN, IDENTIFIER};
 
-typedef struct token Token;
-typedef struct token_list Token_List;
-
 struct token{
 	enum token_type type;
 	char *value;
-	Token *next;
+	struct token *next;
 };
 
-struct token_list;
+struct token_list{
+    struct token *tokens;
+    size_t size;
+    size_t next;
+};
 
-void List_New(Token_List *list){
-	list = (Token_List *)malloc(sizeof(Token_List));
-	list->size = 1;
-	list->next = 0;
-}
+typedef struct token Token;
+typedef struct token_list Token_List;
 
-void List_Add(Token_List *list, Token token){
-	if(list->used >= list->size){
-		list = realloc()
-	}
-}
+void new_list(Token_List *list, size_t init_size);
+void add_entry(Token_List *list, Token token);

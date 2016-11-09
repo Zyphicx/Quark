@@ -1,6 +1,6 @@
 CC = gcc
 
-PARSER = Parser/lexer.c
+PARSER = Parser/lexer.c Parser/token_list.c
 
 ALL = $(PARSER)
 NAME = quark
