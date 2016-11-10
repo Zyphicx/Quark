@@ -57,8 +57,9 @@ int str_contains(char *s, char *val){
 	return *val ? 0 : 1;
 }
 
-void str_cut(char **str, int amount){
+char *str_cut(char *str, int amount){
         while(amount-- > 0){
-             (*str)++;
+             str++;
         }
+        return str;
 }
