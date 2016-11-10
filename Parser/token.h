@@ -3,6 +3,10 @@
 
 enum token_type {IF, WHILE, L_PAREN, R_PAREN, IDENTIFIER};
 
+char *keywords[] = {"",
+                    "",
+                   };
+
 struct token{
 	enum token_type type;
 	char *value;
