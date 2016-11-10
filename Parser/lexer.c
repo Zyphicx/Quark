@@ -41,8 +41,8 @@ void lex(FILE *file, Token_List *list){
 Token *get_next_token(char *line){
 	Token token;
 
-	if(str_contains(line, "Because"))
-		printf("Yayo!\n");
+	if(str_contains(line, "for"))
+		token.value = 
 }
 
 int str_contains(char *s, char *val){
@@ -53,5 +53,12 @@ int str_contains(char *s, char *val){
 		s++; 
 		val++;
 	}
+        s = 
 	return *val ? 0 : 1;
+}
+
+void str_cut(char **str, int amount){
+        while(amount-- > 1){
+                
+        }
 }
