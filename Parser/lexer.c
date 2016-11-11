@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "token.h"
-#define MAX_LINE 60
+#define MAX_LINE 50000
 
 void lex(FILE *file, Token_List *list);
 int get_next_token(char *line, Token *token);
+char *read_line(char *s, int n, FILE *file);
 int read_token(char *s, char *t, int len);
 int is_word(char *s);
 
@@ -33,7 +34,7 @@ void lex(FILE *file, Token_List *list){
 	int linecount = 0;
 	char line[MAX_LINE]; //It will end with a \0, so it won't read from old lines
 	char *line_ptr;
-	while(fgets(line, MAX_LINE - 1, file) != NULL){
+	while(fgets(line, MAX_LINE - 1, file) != NULL){ //Use mmap for reading instead!!!!!!!!!!!!!!!!!!
 		line_ptr = line;
 		Token *token;
 
@@ -55,6 +56,13 @@ int get_next_token(char *s, Token *token){
 	}
 
 	return length + 1;
+}
+
+char *read_line(char *s, int n, FILE *file){
+	while((*s = getc(file)) != EOF && *s != '\n' && n-- > 0)
+		++s;
+	*++s = '\0';
+	return *--s == EOF ? NULL : s;
 }
 
 int read_token(char *s, char *t, int len){
