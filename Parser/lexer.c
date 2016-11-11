@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "token.h"
 #define MAX_LINE 512
 
 void lex(FILE *file, Token_List *list);
 Token *get_next_token(char *line);
-int str_contains(char *s, char *val);
+int get_next_word(char *s, char *target, int max);
 
 int main(int argc, char *argv[]){
 	Token_List list;
@@ -30,36 +31,34 @@ void lex(FILE *file, Token_List *list){
 			fprintf(stderr, "Error with reading line");
 			exit(1);
 		}
-		printf("%s\n", line);
-		get_next_token(line);
+		/*printf("%s\n", line);
+		get_next_token(line);*/
+
 	}
-	/*if(str_contains(file, "for")){
-		printf("It does contain for");
-	}*/
 }
 
 Token *get_next_token(char *line){
 	Token token;
+	token.value = malloc(MAX_TOKEN_VALUE * sizeof(char));
 
-	if(str_contains(line, "for"))
-		token.value = 
-}
-
-int str_contains(char *s, char *val){
-	while(*s == ' ' || *s == '\t')
-		++s;
-
-	while(*s == *val && *val){
-		s++; 
-		val++;
+	//Check for words
+	if(get_next_word(line, token.value, MAX_TOKEN_VALUE)){
+		printf("%s", token.value);
 	}
-        s = 
-	return *val ? 0 : 1;
+
+	//Check for numbers
+
+	//Check for specific characters
 }
 
-char *str_cut(char *str, int amount){
-        while(amount-- > 0){
-             str++;
-        }
-        return str;
+int get_next_word(char *s, char *target, int max){ //USE STRTOK OTHERWISE!!!!!!!!
+	while(isspace(*s++))
+		;
+	int count = 1;
+	if(!isalpha(*target++ = *s++))
+		return 0;
+	while(isalnum(*target++ = *s++) && --max > 1)
+		count++;
+	*target = '\0';
+	return count + 1;
 }
