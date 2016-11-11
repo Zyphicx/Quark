@@ -11,7 +11,6 @@ enum token_type {IF, WHILE, L_PAREN, R_PAREN, IDENTIFIER};
 struct token{
 	enum token_type type;
 	char *value;
-	struct token *next;
 };
 
 struct token_list{

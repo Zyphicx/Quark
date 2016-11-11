@@ -2,16 +2,17 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "token.h"
-#define MAX_LINE 512
+#define MAX_LINE 60
 
 void lex(FILE *file, Token_List *list);
-char *get_next_token(char *line, Token *token);
+int get_next_token(char *line, Token *token);
 int read_token(char *s, char *t, int len);
 int is_word(char *s);
 
-char *keywords[] = {"for",
-			"if",
-			"while"};
+char *keywords[] = 
+	{"for",
+	"if",
+	"while"};
 
 int main(int argc, char *argv[]){
 	Token_List list;
@@ -36,32 +37,24 @@ void lex(FILE *file, Token_List *list){
 		line_ptr = line;
 		Token *token;
 
-		while(*line_ptr)
-			line_ptr = get_next_token(line_ptr, token);
+		while(*line_ptr){
+			line_ptr += get_next_token(line_ptr, token);
+		}
 	}
 }
 
-char *get_next_token(char *line, Token *token){
-	token = (Token *)malloc(sizeof(Token));
+int get_next_token(char *s, Token *token){
+	token = (Token *)malloc(sizeof(token));
 
-	//Check for the following and set token type
-
-	//Check for words
 	int length;
 
-	if(length = is_word(line)){
-		token->value = (char *)malloc(length * sizeof(char) + 1); //Add 1 for null character
-		read_token(line, token->value, length);
-		line += length + 1;
+	if(length = is_word(s)){
+		token->value = malloc(length * sizeof(char) + 1); //Add 1 for null character
+		read_token(s, token->value, length);
 		printf("The word is \"%s\", and it is of length: %d\n", token->value, length);
 	}
 
-	//Check for numbers
-
-	//Check for specific characters
-
-	//Malloc token char and set value
-	return line;
+	return length + 1;
 }
 
 int read_token(char *s, char *t, int len){
