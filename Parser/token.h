@@ -24,7 +24,8 @@ struct keyword{
 	const enum token_type type;
 };
 
-extern const struct keyword keywords[];
+extern struct keyword keywords[];
+extern const int keywords_amount;
 
 struct token{
 	enum token_type type;

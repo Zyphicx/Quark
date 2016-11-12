@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include "token.h"
 
 #define MAX_LINE 53
@@ -9,14 +10,17 @@ int lex(FILE *file);
 int getToken(char *s, Token *token);
 char *read_bytes(char *s, char *t, int num);
 int is_word(char *s);
+int is_number(char *s);
 
-const struct keyword keywords[] = {
+struct keyword keywords[] = {
 	"del", DELETE,
 	"for", FOR,
 	"if", IF,
 	"include", INCLUDE,
 	"while", WHILE
 };
+
+const int keywords_amount = sizeof(keywords) / sizeof(keywords[0]);
 
 int main(int argc, char *argv[]){
 	lex(fopen(argv[1], "r"));
@@ -49,18 +53,28 @@ int getToken(char *s, Token *token){
 		token->value = (char *)malloc(length + 1); //Add one for the null character
 		//printf("The word is of length %d\n", length);
 		read_bytes(s, token->value, length);
+		struct keyword *kp;
+		token->type = IDENTIFIER;
+		for(kp = keywords; kp < (keywords + keywords_amount); kp++){
+			if(!strcmp(token->value, kp->key)){
+				token->type = kp->type;
+				break;
+			}
+		}
 	}
-	else if(length = is_number(%s)){
+	else if(length = is_number(s)){
 		token->type = NUMBER;
 		token->value = (char *)malloc(length + 1);
 		read_bytes(s, token->value, length);
 	}
 
+	printf("%s\t%d\t%ld\n", token->value, token->type, strlen(token->value));
+
 	return length + 1;
 }
 
 char *read_bytes(char *s, char *t, int num){
-	while((*s++ = *t++) && --num)
+	while((*t++ = *s++) && --num)
 		;
 	*t = '\0';
 	return t;
@@ -79,8 +93,10 @@ int is_word(char *s){ //CHECK IF THIS IS SLOW
 int is_number(char *s){
 	int count = (*s == '-' ? 1 : 0);
 	s += count;
-	while(isdigit(*s++))
+	while(isdigit(*s)){
 		++count;
+		++s;
+	}
 	if(*s++ != '.')
 		return count;
 	++count;
