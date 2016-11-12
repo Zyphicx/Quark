@@ -2,86 +2,78 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "token.h"
-#define MAX_LINE 50000
 
-void lex(FILE *file, Token_List *list);
-int get_next_token(char *line, Token *token);
-char *read_line(char *s, int n, FILE *file);
-int read_token(char *s, char *t, int len);
+#define MAX_LINE 50
+
+int lex(FILE *file);
+void lex_line(char *line);
+int getToken(char *s, Token *token);
+char *read_bytes(char *s, char *t, int num);
 int is_word(char *s);
 
 char *keywords[] = 
-	{"for",
+{
+	"for",
 	"if",
-	"while"};
+	"while"
+};
 
 int main(int argc, char *argv[]){
-	Token_List list;
-	new_list(&list, 5);
-	Token token;
-	token.value = "Lol\n";
-	add_entry(&list, token);
-
-	int i;
-	for(i = 0; i < list.next; i++){
-		printf("%s", list.tokens[i].value);
-	}
-	if(argc == 2)
-		lex(fopen(argv[1], "r"), &list);
+	lex(fopen(argv[1], "r"));
 }
 
-void lex(FILE *file, Token_List *list){
-	int linecount = 0;
-	char line[MAX_LINE]; //It will end with a \0, so it won't read from old lines
-	char *line_ptr;
-	while(fgets(line, MAX_LINE - 1, file) != NULL){ //Use mmap for reading instead!!!!!!!!!!!!!!!!!!
-		line_ptr = line;
-		Token *token;
+int lex(FILE *file){
+	char line[MAX_LINE];
 
-		while(*line_ptr){
-			line_ptr += get_next_token(line_ptr, token);
-		}
+	while(fgets(line, MAX_LINE - 1, file) != NULL){
+		//printf("The word is of length %d\n", is_word(line));
+		lex_line(line);
 	}
 }
 
-int get_next_token(char *s, Token *token){
-	token = (Token *)malloc(sizeof(token));
+void lex_line(char *line){
+	static int count = 0;
 
-	int length;
+	while(*line){
+		Token token;
+		++count;
+		int length = getToken(line, &token);
+		line += length;
+		printf("%d\n", length);
+	}
+}
+
+int getToken(char *s, Token *token){
+	int length = 0;
 
 	if(length = is_word(s)){
-		token->value = malloc(length * sizeof(char) + 1); //Add 1 for null character
-		read_token(s, token->value, length);
-		printf("The word is \"%s\", and it is of length: %d\n", token->value, length);
+		token->value = (char *)malloc(length + 1); //Add one for the null character
+		printf("The word is of length %d\n", length);
+		read_bytes(s, token->value, length);
 	}
 
-	return length + 1;
+	return length;
 }
 
-char *read_line(char *s, int n, FILE *file){
-	while((*s = getc(file)) != EOF && *s != '\n' && n-- > 0)
-		++s;
-	*++s = '\0';
-	return *--s == EOF ? NULL : s;
+char *read_bytes(char *s, char *t, int num){
+	while((*s++ = *t++) && --num)
+		;
+	*t = '\0';
+	return t;
 }
 
-int read_token(char *s, char *t, int len){
-	while(isspace(*s))
+int is_word(char *s){ //CHECK IF THIS IS SLOW
+	int count = 1;
+	while(IS_SPACE(*s))
 		++s;
-	while(len-- > 0){
-		*t++ = *s++;
-	}
-	*++t = '\0';
-}
-
-int is_word(char *s){
-	while(isspace(*s))
-		++s;
-	int count = 0;
 	if(!isalpha(*s++))
 		return 0;
-	++count;
 	while(isalnum(*s++))
 		++count;
+
 	return count;
+}
+
+int is_number(char *s){
+
 }

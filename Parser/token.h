@@ -2,7 +2,18 @@
 #define TOKEN_H
 
 #include <stddef.h>
-#define MAX_TOKEN_VALUE 32
+
+#define IS_SPACE(c)	(c == ' ' || c == '\t' ||\
+					 c == '\n'|| c == '\v' ||\
+					 c == '\f'|| c == '\r')
+
+#define IS_NUM(c)	(c >= 0 && c <= 9)
+
+#define IS_ALPHA(c) (c >= 'A' && c <= 'Z') ||\
+					(c >= 'a' && c <= 'z') ||\
+					(c == '_')
+
+#define IS_ALNUM(c) (IS_ALPHA(c)) || (IS_NUM(c))
 
 extern char *keywords[];
 
