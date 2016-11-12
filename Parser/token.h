@@ -15,9 +15,16 @@
 
 #define IS_ALNUM(c) (IS_ALPHA(c)) || (IS_NUM(c))
 
-extern char *keywords[];
+enum token_type {NUMBER, IDENTIFIER, STRING, ADD, SUBTRACT, MULTIPLY, DIVIDE, MODULO, \
+	DELETE, IF, INCLUDE, ELIF, ELSE, FOR, WHILE, L_PAREN, R_PAREN, L_CURLY, R_CURLY, \
+	L_BRACK, R_BRACK, COMMA, SEMI_COLON};
 
-enum token_type {IF, WHILE, L_PAREN, R_PAREN, IDENTIFIER};
+struct keyword{
+	const char *key;
+	const enum token_type type;
+};
+
+extern const struct keyword keywords[];
 
 struct token{
 	enum token_type type;
