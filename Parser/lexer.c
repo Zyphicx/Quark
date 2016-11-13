@@ -161,22 +161,22 @@ int is_symbols(char *s, enum token_type *t){
 
 	switch(*(s+1)){
 		case '=':
-			switch(*t){
-				case ADD: *t = ADD_ASSIGN;				return 2;
-				case SUBTRACT: *t = SUBTRACT_ASSIGN;	return 2;
-				case MULTIPLY: *t = MULTIPLY_ASSIGN;	return 2;
-				case DIVIDE: *t = DIVIDE_ASSIGN;		return 2;
-				case MODULO: *t = MODULO_ASSIGN;		return 2;
-				case EXPONENT: *t = EXPONENT_ASSIGN;	return 2;
-				case GREATER: *t = GREATER_EQUALS;		return 2;
-				case LESS: *t = LESS_EQUALS;			return 2;
-				case NOT: *t = NOT_EQUALS;				return 2;
-				default: return 1;
+		switch(*t){
+			case ADD: *t = ADD_ASSIGN;				return 2;
+			case SUBTRACT: *t = SUBTRACT_ASSIGN;	return 2;
+			case MULTIPLY: *t = MULTIPLY_ASSIGN;	return 2;
+			case DIVIDE: *t = DIVIDE_ASSIGN;		return 2;
+			case MODULO: *t = MODULO_ASSIGN;		return 2;
+			case EXPONENT: *t = EXPONENT_ASSIGN;	return 2;
+			case GREATER: *t = GREATER_EQUALS;		return 2;
+			case LESS: *t = LESS_EQUALS;			return 2;
+			case NOT: *t = NOT_EQUALS;				return 2;
+			default: return 1;
 		}
 		case '&':
-			switch(*t){
-				case AMPER: *t = AND;					return 2;
-				default: return 1;						break;
+		switch(*t){
+			case AMPER: *t = AND;					return 2;
+			default: return 1;						break;
 			}
 		return 2;
 	}
