@@ -7,7 +7,7 @@
 					 c == '\n'|| c == '\v' ||\
 					 c == '\f'|| c == '\r')
 
-#define IS_NUM(c)	(c >= 0 && c <= 9)
+#define IS_NUM(c)	(c >= '0' && c <= '9')
 
 #define IS_ALPHA(c) (c >= 'A' && c <= 'Z') ||\
 					(c >= 'a' && c <= 'z') ||\
@@ -15,16 +15,18 @@
 
 #define IS_ALNUM(c) (IS_ALPHA(c)) || (IS_NUM(c))
 
-enum token_type {NUMBER, IDENTIFIER, STRING, ADD, SUBTRACT, MULTIPLY, DIVIDE, MODULO, \
-	DELETE, IF, INCLUDE, ELIF, ELSE, FOR, WHILE, L_PAREN, R_PAREN, L_CURLY, R_CURLY, \
-	L_BRACK, R_BRACK, COMMA, SEMI_COLON};
+enum token_type {NUMBER, IDENTIFIER, STRING, ADD, SUBTRACT, MULTIPLY, DIVIDE, MODULO, EXPONENT,
+	GREATER, LESS, GREATER_EQUALS, LESS_EQUALS, NOT, NOT_EQUALS, AMPER, AND, VBAR, OR, ASSIGN, ADD_ASSIGN, SUBTRACT_ASSIGN,
+	MULTIPLY_ASSIGN, DIVIDE_ASSIGN, MODULO_ASSIGN, EXPONENT_ASSIGN, EQUALS,
+	DELETE, IF, INCLUDE, ELIF, ELSE, FOR, WHILE, L_PAREN, R_PAREN, L_CURLY, R_CURLY,
+	L_BRACK, R_BRACK, COMMA, COLON, SEMICOLON, PREPROCESSOR, UNDEFINED};
 
-struct keyword{
+struct key_type_pair{
 	const char *key;
 	const enum token_type type;
 };
 
-extern struct keyword keywords[];
+extern struct key_type_pair keywords[];
 extern const int keywords_amount;
 
 struct token{

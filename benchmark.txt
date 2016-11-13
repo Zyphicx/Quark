@@ -1,0 +1,1 @@
+clang can compile (not just lex) the sqlite3.c amalgamation, which is 199,484 lines long (122,136 slocs), in 1.77 seconds on my computer. Linearly extrapolating to 1 million lines suggests clang could compile (not just lex) a 1 million line file in ~8.87 seconds. Maybe use that for a benchmark.
