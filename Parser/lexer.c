@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <time.h> //REMOVE THIS!!! IT IS JUST FOR TIME TESTING!!!!!!!!!!!!
 #include "token.h"
 
 #define MAX_LINE 150
@@ -30,27 +31,30 @@ int main(int argc, char *argv[]){
 }
 
 int lex(FILE *file){
+	clock_t start = clock();
 	int length;
 	char line[MAX_LINE];
 	char *line_ptr;
+	int count = 0;
 
 	while(fgets(line, MAX_LINE, file) != NULL){
 		line_ptr = line;
 
 		while(*line_ptr){
-			if(!(*line_ptr))
+			if(*line_ptr == '\n' || *line_ptr == '\r'){
 				break;
+			}
 			Token *token = malloc(sizeof(Token));
 			length = getToken(line_ptr, token);
 			line_ptr += length;
-			//printf("%s\n", line_ptr);
-			//printf("%d\n", length);
-			if(token->type != UNDEFINED)
+			if(token->type != UNDEFINED){
 				free(token->value);
+				++count;
+			}
 			free(token);
 		}
 	}
-	printf("Done!\n");
+	printf("Done! Read %d tokens. It took %f seconds\n", count, (double)(clock() - start) / CLOCKS_PER_SEC);
 }
 
 int getToken(char *s, Token *token){
@@ -62,31 +66,31 @@ int getToken(char *s, Token *token){
 	}
 
 	if(length = is_word(s)){
-		printf("I am a word\n");
 		token->value = (char *)malloc(length + 1); //Add one for the null character
 		read_bytes(s, token->value, length);
 		token->type = get_keyword_type(token->value);
 	}
 	else if(length = is_number(s)){
-		printf("I am a number\n");
 		token->value = (char *)malloc(length + 1); //Add one for the null character
 		read_bytes(s, token->value, length);
 		token->type = NUMBER;
 	}
 	else if(*s == '#'){
-		printf("I am preprocessor\n");
 		token->value = (char *)malloc(length + 1); //Add one for the null character
 		read_bytes(s, token->value, length);
 		token->type = PREPROCESSOR;
 	}
 	else if(length = is_symbols(s, &(token->type))){
-		printf("I am a symbol\n");
-		//printf("Symbol length: %d\n", length);
 		token->value = (char *)malloc(length + 1); //Add one for the null character
 		read_bytes(s, token->value, length);
-	}else{
+	}
+	else if(length = is_string(s)){
+		token->value = (char *)malloc(length - 1); //-2 for " and ", then + 1 for the null character
+		read_bytes(s + 1, token->value, length - 2);
+		token->type = STRING;
+	}
+	else{
 		token->type = UNDEFINED;
-		printf("I am nothing :(\n");
 	}
 
 	printf("%s\t%d\t%ld\t%d\n", token->value, token->type, strlen(token->value), *token->value);
@@ -161,26 +165,44 @@ int is_symbols(char *s, enum token_type *t){
 
 	switch(*(s+1)){
 		case '=':
-		switch(*t){
-			case ADD: *t = ADD_ASSIGN;	return 2;
-			case SUBTRACT: *t = SUBTRACT_ASSIGN;	return 2;
-			case MULTIPLY: *t = MULTIPLY_ASSIGN;	return 2;
-			case DIVIDE: *t = DIVIDE_ASSIGN;	return 2;
-			case MODULO: *t = MODULO_ASSIGN;	return 2;
-			case EXPONENT: *t = EXPONENT_ASSIGN;	return 2;
-			case GREATER: *t = GREATER_EQUALS;	return 2;
-			case LESS: *t = LESS_EQUALS;	return 2;
-			case NOT: *t = NOT_EQUALS;	return 2;
-			default: return 1;
+			switch(*t){
+				case ADD: *t = ADD_ASSIGN;	return 2;
+				case SUBTRACT: *t = SUBTRACT_ASSIGN;	return 2;
+				case MULTIPLY: *t = MULTIPLY_ASSIGN;	return 2;
+				case DIVIDE: *t = DIVIDE_ASSIGN;	return 2;
+				case MODULO: *t = MODULO_ASSIGN;	return 2;
+				case EXPONENT: *t = EXPONENT_ASSIGN;	return 2;
+				case GREATER: *t = GREATER_EQUALS;	return 2;
+				case LESS: *t = LESS_EQUALS;	return 2;
+				case NOT: *t = NOT_EQUALS;	return 2;
+				case ASSIGN: *t = EQUALS; return 2;
+				default: return 1;
 		}
 		case '&':
-		switch(*t){
-			case AMPER: *t = AND;	return 2;
-			default: return 1;	break;
+			switch(*t){
+				case AMPER: *t = AND;	return 2;
+				default: return 1;	break;
+			}
+		case '+':
+			switch(*t){
+				case ADD: *t = INCREMENT;	return 2;
+		}
+		case '-':
+			switch(*t){
+				case SUBTRACT: *t = DECREMENT;	return 2;
 			}
 		return 2;
 	}
 	return *t ? 1 : 0;
+}
+
+int is_string(char *s){
+	int count = 2;
+	if(*s++ != '"')
+		return 0;
+	while(*s++ != '"')
+		++count;
+	return count;
 }
 
 enum token_type get_keyword_type(char *s){

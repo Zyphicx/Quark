@@ -1,13 +1,7 @@
-for(int i = 0; i < 5; i++){
 
-
-
-
-
-
-
-
-
-
-
+function start(hey, you){
+  for(int i = 0; i < hey; i++){
+    if(i == you)
+      printf("Cool!");
+  }
 }
