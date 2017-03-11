@@ -1,6 +1,0 @@
-Quark is a programming language originally intended to be:
-	-Lightweight
-	-Object oriented
-	-Interpreted
-	-Cross-language compatible with C
-	-Used for rapid development
