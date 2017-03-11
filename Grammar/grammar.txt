@@ -1,0 +1,3 @@
+expr: (IDENTIFIER | NUMBER) (operator (IDENTIFIER | CONST))*
+
+if_statement: IF  L_PAREN  expr  R_PAREN  statement

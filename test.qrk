@@ -1,0 +1,12 @@
+<int, double> number; // Gets automatically set to 0
+String text = "Sample text";
+List things = [1,2,3,4];
+
+<?> whatever = "Hello!";
+whatever = [2,3,5,7,11];
+
+double compare(<int, double> number1, <int, double> number2){
+	return number1 - number2;
+}
+
+print(compare(number, 1));
