@@ -25,7 +25,7 @@ void table_free(HashTable *table){
 			*entry = temp;
 		}
 	}
-
+	free(table->entries);
 	free(table);
 }
 

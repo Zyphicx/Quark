@@ -49,6 +49,9 @@ void addToTable(FILE *file){
 
 		insert(grammarTable, entry_create(namePart, grammarPart));
 
+		free(namePart); //namePart is being COPIED by the insert function, the actual namePart pointer
+						//is not being saved there itself. This is for compatibility with string literals.
+
 		printf("%s\n", (char *)lookup(grammarTable, "expr")->value);
 
 	}

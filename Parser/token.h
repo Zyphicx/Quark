@@ -30,6 +30,7 @@ int isWord(char *s);
 int isNumber(char *s);
 int isPreprocessor(char *s);
 int isSymbols(char *s, enum TokenType *type);
+int isString(char *s);
 enum TokenType getKeywordType(char *s);
 int strEquals(const char *s, const char *t);
 
