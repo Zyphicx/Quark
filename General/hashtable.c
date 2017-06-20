@@ -19,7 +19,7 @@ void table_free(HashTable *table){
 
 	for(entry = table->entries; entry < (table->entries + table->size); entry++){
 		while(*entry != NULL){
-			printf("Thing - %s\n", (char *)((*entry)->value));
+			//printf("Thing - %s\n", (char *)((*entry)->value));
 			HashEntry *temp = (*entry)->next;
 			entry_free(*entry);
 			*entry = temp;
@@ -41,7 +41,7 @@ int hash(char *value, int size){
 	return hash % size;
 }
 
-void insert(HashTable *table, HashEntry *entry){
+void table_insert(HashTable *table, HashEntry *entry){
 	int hashval = hash(entry->key, table->size);
 
 	if(table->entries[hashval] == NULL){
@@ -54,7 +54,7 @@ void insert(HashTable *table, HashEntry *entry){
 	}
 }
 
-HashEntry *lookup(HashTable *table, char *s){
+HashEntry *table_lookup(HashTable *table, char *s){
 	int hashval = hash(s, table->size);
 	HashEntry *entry;
 
@@ -68,7 +68,7 @@ HashEntry *lookup(HashTable *table, char *s){
 	return entry;
 }
 
-HashEntry *drop(HashTable *table, HashEntry *entry){
+HashEntry *table_drop(HashTable *table, HashEntry *entry){
 	int hashval = hash(entry->key, table->size);
 	HashEntry *e;
 
@@ -119,8 +119,8 @@ void entry_free(HashEntry *entry){
 	if(entry->key != NULL)
 		free(entry->key);
 
-	if(entry->value != NULL)
-		free(entry->value);
+	/* if(entry->value != NULL)
+		free(entry->value);*/
 
 	free(entry);
 }

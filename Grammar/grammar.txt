@@ -1,3 +1,9 @@
-expr: (IDENTIFIER | NUMBER) (operator (IDENTIFIER | CONST))*
+operator: PLUS | MINUS | STAR | SLASH | PERCENT | CARET
 
-if_statement: IF  L_PAREN  expr  R_PAREN  statement
+expr: IDENTIFIER | NUMBER (operator IDENTIFIER | NUMBER)*
+
+assignment: IDENTIFIER EQUALS expr SEMICOLON
+
+if_statement: IF L_PAREN expr R_PAREN statement- (ELSE IF L_PAREN expr R_PAREN statement-)* (ELSE statement-)-
+
+statement: assignment | if_statement

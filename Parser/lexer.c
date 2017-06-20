@@ -2,21 +2,12 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include <time.h> //REMOVE THIS!!! IT IS JUST FOR TIME TESTING!!!!!!!!!!!!
 #include <locale.h>
-
-
-
-
-#include <unistd.h>
-
-
-
 
 #include "token.h"
 #include "grammar.h"
 
-#define MAX_LINE 1024
+#define MAX_LINE 4096
 
 Keyword keywords[] = {
 	"double", DOUBLE,
@@ -34,7 +25,7 @@ const int keywordAmount = sizeof(keywords) / sizeof(keywords[0]);
 
 int main(int argc, char *argv[]){
 	clock_t start = clock();
-	setlocale(LC_CTYPE,"it_IT.UTF-8"); 
+	setlocale(LC_CTYPE,"it_IT.UTF-8");
 	Token *list = lexFile(argv[1]);
 	printf("It took %f seconds\n", ((double)(clock() - start) / CLOCKS_PER_SEC));
 
@@ -48,8 +39,6 @@ int main(int argc, char *argv[]){
 	}
 
 	setupGrammar();
-
-	sleep(5);
 
 	return 0;
 }
@@ -138,7 +127,7 @@ int getToken(char *s, Token *token){
 
 char *readBytes(char *s, char *t, int num){
 	while(num--)
-		(*t++ = *s++);
+		*t++ = *s++;
 	*t = '\0';
 	return t;
 }
