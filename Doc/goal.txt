@@ -6,4 +6,4 @@ Quark is a programming language intended to be:
 	-Used for rapid development
 
 Quark is best used in conjunction with other languages that are very good at
-doing smaller subsets of things things.
+doing a smaller subset of tasks.

@@ -1,7 +1,8 @@
 #ifndef GRAMMAR_H
 #define GRAMMAR_H
 
-#include "../Parser/token.h"
+#include "token.h"
+#include "../General/hashtable.h"
 
 typedef struct grammar_head GrammarHead;
 typedef struct grammar_part GrammarPart;
@@ -49,5 +50,8 @@ struct grammar_head{
 
 void setupGrammar();
 void deleteGrammar();
+
+extern HashTable *grammarTable;
+extern GrammarHead *grammar;
 
 #endif

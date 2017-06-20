@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include <string.h>
 #include "grammar.h"
-#include "../General/hashtable.h"
 
 #define MAX_LINE 4096
 
@@ -73,7 +72,7 @@ GrammarHead *grammar;
 HashTable *grammarTable;
 
 void setupGrammar(){
-	FILE *file = fopen("Grammar/grammar.txt", "r");
+	FILE *file = fopen("Grammar/grammar.qgf", "r");
 
 	grammarTable = table_new(20);
 	//addToTable(file);
@@ -204,7 +203,7 @@ void createGrammars(FILE *file){
 	GrammarHead *curHead = NULL;
 
 	while(fgets(line, MAX_LINE + 1, file) != NULL){
-		if(*line == '\n' || *line == '\r')
+		if(*line == '\n' || *line == '\r' || *line == '#')
 			continue;
 
 		char *line_ptr = line;
