@@ -48,7 +48,7 @@ void table_insert(HashTable *table, HashEntry *entry){
 		table->entries[hashval] = entry;
 	}else{
 		HashEntry *e;
-		for(e = table->entries[hashval]; e->next != NULL; e = e->next)
+		for(e = table->entries[hashval]; e->next != NULL; e = e->next) //strcmp if equal?
 			;
 		e->next = entry;
 	}

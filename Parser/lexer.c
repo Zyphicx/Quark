@@ -17,7 +17,9 @@ Keyword keywords[] = {
 	"include", INCLUDE,
 	"int", INTEGER,
 	"List", LIST,
+	"return", RETURN,
 	"String", STRING,
+	"Tuple", TUPLE,
 	"while", WHILE
 };
 
@@ -60,7 +62,7 @@ Token *lexFile(char *path){
 			while(isspace(*line_ptr))
 				++line_ptr;
 
-			if(*line_ptr == '\n' || *line_ptr == '\r' || !*line_ptr){
+			if(*line_ptr == '\n' || *line_ptr == '\r' || !*line_ptr || (*line_ptr == '/' && *(line_ptr + 1) == '/')){
 				break;
 			}
 
@@ -120,7 +122,7 @@ int getToken(char *s, Token *token){
 		printf("UNDEFINED!\n");
 	}
 
-	//printf("%s\t%d\t%ld\t%d\n", token->value, token->type, strlen(token->value), *token->value);
+	printf("%s\t%d\t%ld\t%d\n", token->value, token->type, strlen(token->value), *token->value);
 
 	return length;
 }
@@ -211,6 +213,11 @@ int isSymbols(char *s, enum TokenType *t){
 		case '&':
 			switch(*t){
 				case AMPER: *t = AMPER_AMPER;		return 2;
+				default: return 1;	break;
+			}
+		case '|':
+			switch(*t){
+				case VBAR: *t = VBAR_VBAR;		return 2;
 				default: return 1;	break;
 			}
 		case '+':

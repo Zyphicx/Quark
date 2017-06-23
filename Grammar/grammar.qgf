@@ -1,28 +1,26 @@
-prim_type: INTEGER | DOUBLE
+#prim_type: INTEGER | DOUBLE
 
-object_type: LIST
+#object_type: LIST
 
-union: LESS QUESTION | prim_type | object_type | IDENTIFIER GREATER
+#union: LESS QUESTION | prim_type | object_type | IDENTIFIER GREATER
 
-type: prim_types | object_types | union
+#type: prim_types | object_types | union
 
-operator: PLUS | MINUS | STAR | SLASH | PERCENT | CARET
+#operator: PLUS | MINUS | STAR | SLASH | PERCENT | CARET
 
-expr: IDENTIFIER | NUMBER (operator IDENTIFIER | NUMBER)*
+#expr: IDENTIFIER | NUMBER (operator IDENTIFIER | NUMBER)*
 
-assignment: IDENTIFIER EQUALS expr SEMICOLON
+#assignment: IDENTIFIER EQUALS expr SEMICOLON
 
-var_decl: type IDENTIFIER (EQUALS expr)-
+#var_decl: type IDENTIFIER (EQUALS expr)-
 
-if_statement: IF L_PAREN expr R_PAREN statement- (ELSE IF L_PAREN expr R_PAREN statement-)* (ELSE statement-)-
+#if_statement: IF L_PAREN expr R_PAREN statement- (ELSE IF L_PAREN expr R_PAREN statement-)* (ELSE statement-)-
 
-body: L_CURLY statement* R_CURLY
+#body: L_CURLY statement* R_CURLY
 
-statement: assignment | if_statement
+#statement: assignment | if_statement
 
-func_def: type IDENTIFIER L_PAREN (var_decl)- (COMMA var_decl)*
-
-
+#func_def: type IDENTIFIER L_PAREN (var_decl)- (COMMA var_decl)*
 
 
 
@@ -50,17 +48,71 @@ func_def: type IDENTIFIER L_PAREN (var_decl)- (COMMA var_decl)*
 
 
 
+#
+# ---PLEASE NOTE: Watch out for endless macro loops! (A macro referencing itself as the first thing)---
+#
+
+op: arith_op | comp_op
 
 arith_op: PLUS | MINUS | STAR | SLASH | PERCENT | CARET
 
-comp_op: LESS | GREATER | EQUALS_EQUALS | EXCL_EQUALS | LESS_EQUALS | GREATER_EQUALS
+comp_op: LESS | GREATER | EQUALS_EQUALS | EXCL_EQUALS | LESS_EQUALS | GREATER_EQUALS | AMPER_AMPER | VBAR_VBAR
 
 
+equals: EQUALS | PLUS_EQUALS | MINUS_EQUALS | STAR_EQUALS | SLASH_EQUALS | PERCENT_EQUALS | CARET_EQUALS
 
-bool_expr: expr (comp_op expr)*
 
-var_def:
+prim_type: DOUBLE | INTEGER
 
-func_def
+object_type: LIST | STRING | TUPLE
 
-basic_stmt: (assign_stmt) SEMICOLON
+union_type: LESS QUESTION | (type (COMMA type)*) GREATER
+
+type: prim_type | object_type | IDENTIFIER | union_type
+
+
+value: IDENTIFIER | NUMBER | STRING_CONST | tuple_const | list_const
+
+number: NUMBER | IDENTIFIER
+
+string: STRING_CONST | IDENTIFIER
+
+tuple: tuple_const | IDENTIFIER
+
+list: list_const | IDENTIFIER
+
+
+tuple_const: L_PAREN NUMBER- (COMMA NUMBER)* R_PAREN
+
+list_const: L_SQUARE value- (COMMA value)* R_SQUARE
+
+
+expr: arith_expr | comp_expr
+
+arith_expr: number (arith_op number)*
+
+comp_expr: value (comp_op value)*
+
+
+var_def: type IDENTIFIER (EQUALS expr)-
+
+func_def: type IDENTIFIER L_PAREN var_def- (COMMA var_def)* R_PAREN suite
+
+
+stmt: basic_stmt | compound_stmt
+
+basic_stmt: assign_stmt | return_stmt
+
+compound_stmt: if_stmt
+
+suite: L_CURLY- (stmt SEMICOLON)* R_CURLY-
+
+
+assign_stmt: IDENTIFIER equals value
+
+#call_stmt:
+
+return_stmt: RETURN expr
+
+
+if_stmt: IF L_PAREN comp_expr R_PAREN suite
