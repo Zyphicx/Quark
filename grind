@@ -1,0 +1,3 @@
+valgrind --leak-check=yes -v ./quark test.qrk
+
+# --track-origins=yes

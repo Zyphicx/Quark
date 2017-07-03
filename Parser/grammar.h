@@ -2,6 +2,7 @@
 #define GRAMMAR_H
 
 #include "token.h"
+#include "parser.h"
 #include "../General/hashtable.h"
 
 typedef struct grammar_head GrammarHead;
@@ -44,8 +45,10 @@ struct macro_grammar_part{
 
 struct grammar_head{
 	char *name;
-	struct grammar_head *nextGrammar;
-	struct grammar_part *next;
+	struct grammar_head *next;
+	struct grammar_part *grammar;
+
+	Node *(*builder)(size_t);
 };
 
 void setupGrammar();

@@ -20,10 +20,10 @@ typedef struct hash_table HashTable;
 HashTable *table_new(size_t size);
 void table_free(HashTable *table);
 int hash(char *value, int size);
-void table_insert(HashTable *table, HashEntry *entry);
-HashEntry *table_drop(HashTable *table, HashEntry *entry);
-HashEntry *table_lookup(HashTable *table, char *s);
-HashEntry *entry_create(char *key, void *value);
+void table_insert(HashTable *table, char *key, void *value);
+void *table_drop(HashTable *table, HashEntry *entry);
+void *table_lookup(HashTable *table, char *s);
+HashEntry *entry_new(char *key, void *value);
 void entry_free(HashEntry *entry);
 void entry_setval(HashEntry *entry, void *value);
 

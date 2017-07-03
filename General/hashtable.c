@@ -41,7 +41,9 @@ int hash(char *value, int size){
 	return hash % size;
 }
 
-void table_insert(HashTable *table, HashEntry *entry){
+void table_insert(HashTable *table, char *key, void *value){
+	HashEntry *entry = entry_new(key, value);
+
 	int hashval = hash(entry->key, table->size);
 
 	if(table->entries[hashval] == NULL){
@@ -54,21 +56,23 @@ void table_insert(HashTable *table, HashEntry *entry){
 	}
 }
 
-HashEntry *table_lookup(HashTable *table, char *s){
+void *table_lookup(HashTable *table, char *s){
 	int hashval = hash(s, table->size);
-	HashEntry *entry;
+	HashEntry *entry = NULL;
 
 	if((entry = table->entries[hashval]) != NULL){
-		while(strcmp(entry->key, s) != 0) {
+		while(strcmp(entry->key, s)) {
 			if((entry = entry->next) == NULL)
 				return NULL;
+			else
+				entry = entry->next;
 		}
 	}
 
-	return entry;
+	return entry->value;
 }
 
-HashEntry *table_drop(HashTable *table, HashEntry *entry){
+void *table_drop(HashTable *table, HashEntry *entry){
 	int hashval = hash(entry->key, table->size);
 	HashEntry *e;
 
@@ -100,10 +104,10 @@ HashEntry *table_drop(HashTable *table, HashEntry *entry){
 		return NULL;
 	}
 
-	return entry;
+	return entry->value;
 }
 
-HashEntry *entry_create(char *key, void *value){
+HashEntry *entry_new(char *key, void *value){
 	HashEntry *entry = (HashEntry *)malloc(sizeof(HashEntry));
 
 	entry->key = malloc(strlen(key) + 1);

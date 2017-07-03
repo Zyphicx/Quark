@@ -1,12 +1,71 @@
-<int, double> number; // Gets automatically set to 0
-String text = "Sample text";
-List things = [1,2,3,4];
+x = 4;
+return x;
 
-<?> whatever = "Hello!";
-whatever = [2,3,5,7,11];
-
-double compare(<int, double> number1, <int, double> number2){
-	return number1 - number2;
-}
-
-print(compare(number, 1));
+// <int, double> number; // Gets automatically set to 0
+// String text = "Sample text";
+// List things = [1,2,3,4];
+//
+// <?> whatever = "Hello!";
+// whatever = [2,3,5,7,11];
+//
+// int bigNumber = 4.51566E100;
+//
+// double compare(<int, double> number1, <int, double> number2){
+// 	return number1 - number2;
+// }
+//
+// print(compare(number, 1));
+//
+// type Number = <int, double>;
+//
+// attribute Person{
+// 	pub String getName();
+// }
+//
+// class User{
+// 	priv String name;
+// 	pub Number age;
+//
+// 	pub void init(String n, Number a){
+// 		self.name = n;
+// 		self.age = a;
+// 	}
+// }
+//
+// extend User with Person{
+// 	pub String getName(){	//You can extend classes with traits,
+// 		return self.name; 	//(private variables can be accessed in extensions)
+// 	}
+//
+// 	pub int id;				//with fields
+// 	pub String getID(){		//and with new functions
+// 		return self.name;
+// 	}
+// }
+//
+// void main(int argc, String argv[]){
+// 	String name;
+// 	Number age;
+//
+// 	print("What's your name?\n", []);
+// 	name = getInput();
+//
+// 	print("Hello, %s! What's your age?", [input]);
+//
+// 	age = getInput().toNumber(); //These casting functions exist for all types (int, double, String and so on)
+//
+//
+// 	User user = new User(name, age); //Calls the init function
+//
+// 	int grade = match age{
+// 		case 1..6 -> {
+// 			printf("You're not in school yet\n");
+// 			0
+// 		}
+// 		case 7..12 -> {
+// 			printf("You're in grade {}\n", age - 6);
+// 			age - 6
+// 		}
+// 		case
+// 	}
+// }

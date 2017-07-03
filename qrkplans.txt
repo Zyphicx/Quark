@@ -1,0 +1,74 @@
+cond: expr (LESS | GREATER expr)
+
+
+#Operator precedence is embedded into the grammar.
+#Precedence gets higher the lower you get (think of a tree).
+#				I
+#				I
+#				V
+
+arith: term (PLUS | MINUS term)*
+
+term: exp (STAR | SLASH exp)*
+
+exp: factor (CARET factor)*
+
+factor: IDENTIFIER | NUMBER | (L_PAREN expr R_PAREN)
+
+
+match: MATCH expr L_CURLY (CASE expr MINUS_GREATER expr)* R_CURLY
+
+
+expr: arith
+
+
+equals: EQUALS | PLUS_EQUALS | MINUS_EQUALS | STAR_EQUALS | SLASH_EQUALS | CARET_EQUALS
+
+assign_stmt: IDENTIFIER equals expr
+
+
+
+1 - 2*3/4 + 5*6
+
+1 -> - -> 2 -> * -> 3 -> / -> 4 -> + -> 5 -> * -> 6
+
+
+PEMDAS:
+
+4 - Parentheses
+3 - Exponents
+2 - Multiplication/Division
+1 - Addition/Substraction
+
+
+
+Rust allows statements with no effect (such as a lone identifier) to compile
+
+Rust lists expected tokens if beginning matches some grammar.
+(This can quite easily be done by finding all grammars tokens match to
+and then listing the following tokens if nothing is found).
+
+	Example: "int identifier" could either be beginning of variable or function
+	 	 declaration. Therefore all possible tokens which could follow are
+		 listed, such as: '=', '(' or ';'.
+
+
+
+
+Start by matching tokens to prog-grammar. Prog-grammar is the grammar for the
+program (could rename it to mod-grammar for module) which tries to match
+function definitions, variable declarations, class definitions and attribute
+definitions which all would in turn match statements, expressions and other such things
+which would then match other things which would match other things and so on and
+so forth. Tokens are taken from a stream of tokens (could try to implement ungettoken
+which would work like ungetc which puts character back in array and reads from the
+array before file input next time).
+
+
+When matching grammars to tokens, maybe start building nodes when possible grammars
+has been narrowed down to one, or after entire grammar has been matched, the choice
+is up to you.
+
+Expression nodes are not always arithmetic. Arithmetic nodes are a subset of
+expression nodes. Expression nodes can also be identifiers, numbers and match
+expressions and are implemented via the use of a struct with a type and a union.

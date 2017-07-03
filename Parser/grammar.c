@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include "token.h"
 #include "grammar.h"
+#include "lexer.h"
 
 #define MAX_LINE 4096
 
@@ -16,21 +18,37 @@ int getNamePart(char *line);
 int getGrammarPart(char *line);
 enum TokenType getTokenType(char *s);
 
-Keyword tokenNames[] = {
+TokenName tokenNames[] = {
 	"NUMBER", NUMBER,
 	"IDENTIFIER", IDENTIFIER,
 	"STRING_CONST", STRING_CONST,
-	"DOUBLE", DOUBLE,
-	"ELSE", ELSE,
-	"IF", IF,
-	"INCLUDE", INCLUDE,
-	"INTEGER", INTEGER,
-	"FOR", FOR,
 	"LIST", LIST,
-	"RETURN", RETURN,
 	"STRING", STRING,
 	"TUPLE", TUPLE,
+	"BREAK", BREAK,
+	"CASE", CASE,
+	"CLASS", CLASS,
+	"CONST", CONST,
+	"CONTINUE", CONTINUE,
+	"DOUBLE", DOUBLE,
+	"ELSE", ELSE,
+	"ENUM", ENUM,
+	"FALSE", FALS,
+	"FOR", FOR,
+	"FROM", FROM,
+	"IF", IF,
+	"INCLUDE", INCLUDE,
+	"INT", INTEGER,
+	"IS", IS,
+	"MATCH", MATCH,
+	"RETURN", RETURN,
+	"SUPER", SUPER,
+	"SWITCH", SWITCH,
+	"TRUE", TRU,
+	"TYPE", TYPE,
+	"VOID", VOID,
 	"WHILE", WHILE,
+	"WITH", WITH,
 	"PLUS", PLUS,
 	"MINUS", MINUS,
 	"STAR", STAR,
@@ -71,6 +89,20 @@ Keyword tokenNames[] = {
 
 const int tokenNameAmount = sizeof(tokenNames) / sizeof(tokenNames[0]);
 
+typedef struct{
+	char *name;
+	Node *(*builder)(size_t);
+} GrammarBuilder;
+
+GrammarBuilder builders[] = {
+	"prog", buildProg,
+	"assign", buildAssign,
+	"return", buildReturn,
+	"expr", buildExpr
+};
+
+const int builderAmount = sizeof(builders) / sizeof(builders[0]);
+
 GrammarHead *grammar;
 HashTable *grammarTable;
 
@@ -84,8 +116,6 @@ void setupGrammar(){
 
 	createGrammars(file);
 
-	deleteGrammar();
-
 	fclose(file);
 }
 
@@ -93,11 +123,11 @@ void deleteGrammar(){
 
 	GrammarHead *h = grammar;
 	while(h != NULL){
-		GrammarHead *nextHead = h->nextGrammar;
-		GrammarPart *g = h->next;
+		GrammarHead *nextHead = h->next;
+		GrammarPart *g = h->grammar;
 
-		while(g != NULL){
-			GrammarPart *nextPart = g->next;
+		/*while(g != NULL){
+			GrammarPart *nextPart = g->next; PRINTING OVER HEREE
 
 			printf("%d", g->type);
 			switch(g->type){
@@ -121,9 +151,9 @@ void deleteGrammar(){
 			g = nextPart;
 		}
 
-		printf("\n");
+		printf("\n");*/
 
-		freeGrammarPart(h->next);
+		freeGrammarPart(h->grammar);
 
 		free(h->name);
 		free(h);
@@ -215,11 +245,11 @@ void createGrammars(FILE *file){
 
 		int nameLength = getNamePart(line_ptr);
 		head->name = malloc(nameLength + 1);
-		readBytes(line_ptr, head->name, nameLength);
+		readChars(head->name, line_ptr, nameLength);
 
-		head->nextGrammar = NULL;
+		head->next = NULL;
 
-		printf("%s\n", head->name);
+		//printf("%s\n", head->name); PRINTING OVER HEREE
 
 		line_ptr += nameLength + 1; //Skips the colon
 
@@ -228,13 +258,22 @@ void createGrammars(FILE *file){
 			curHead = head;
 		}
 		else{
-			curHead->nextGrammar = head;
+			curHead->next = head;
 			curHead = head;
 		}
 
-		head->next = createGrammar(&line_ptr);
+		head->grammar = createGrammar(&line_ptr);
 
-		table_insert(grammarTable, entry_create(head->name, head->next));
+		head->builder = NULL;
+
+		GrammarBuilder *gb;
+		for(gb = builders; gb < (builders + builderAmount); gb++){
+			if(!strcmp(head->name, gb->name)){
+				head->builder = gb->builder;
+			}
+		}
+
+		table_insert(grammarTable, head->name, head);
 	}
 
 	grammar = grammars; //Sets global grammar to local grammar
@@ -246,8 +285,6 @@ GrammarPart *createGrammar(char **line){
 
 	while(**line && **line != '\n' && **line != '\r' && **line != ')'){
 		GrammarPart *part = getNextPart(line);
-
-		//sleep(3);
 
 		if(g == NULL){
 			g = part;
@@ -278,7 +315,9 @@ GrammarPart *getNextPart(char **line){
 
 	if(isupper(**line)){ //If character is upper, then it's a token, read token
 		while(isupper(**line) || **line == '_'){
+
 			*ptr++ = *(*line)++;
+
 		}
 		*ptr = '\0';
 
@@ -287,7 +326,7 @@ GrammarPart *getNextPart(char **line){
 		tokenPart->type = getTokenType(token);
 		tokenPart->next = NULL;
 
-		printf("Still running! %d\n", tokenPart->type);
+		//printf("Still running! %d\n", tokenPart->type); PRINTING OVER HEREE
 
 	}else if(islower(**line)){ //If character is lower, then it's a macro, expand
 		int chars = 1; //Add 1 for the NULL character at the end
@@ -305,7 +344,7 @@ GrammarPart *getNextPart(char **line){
 		((MacroGrammarPart *)tokenPart)->macro = malloc(chars * sizeof(char));
 		strcpy(((MacroGrammarPart *)tokenPart)->macro, token);
 
-		printf("Still running! %d (Macro): %s\n", tokenPart->type, ((MacroGrammarPart *)tokenPart)->macro);
+		//printf("Still running! %d (Macro): %s\n", tokenPart->type, ((MacroGrammarPart *)tokenPart)->macro); PRINTING OVER HEREE
 
 		//printf("Still running! %s\n", table_lookup(grammarTable, token)->value);
 
@@ -390,9 +429,9 @@ int getGrammarPart(char *line){
 }
 
 enum TokenType getTokenType(char *s){
-	Keyword *kp;
+	TokenName *kp;
 	for(kp = tokenNames; kp < (tokenNames + tokenNameAmount); kp++){
-		if(strEquals(s, kp->key)){
+		if(!strcmp(s, kp->key)){
 			return kp->type;
 		}
 	}

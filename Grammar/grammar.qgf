@@ -52,67 +52,85 @@
 # ---PLEASE NOTE: Watch out for endless macro loops! (A macro referencing itself as the first thing)---
 #
 
-op: arith_op | comp_op
+#include: INCLUDE IDENTIFIER (COMMA IDENTIFIER)* FROM IDENTIFIER
 
-arith_op: PLUS | MINUS | STAR | SLASH | PERCENT | CARET
-
-comp_op: LESS | GREATER | EQUALS_EQUALS | EXCL_EQUALS | LESS_EQUALS | GREATER_EQUALS | AMPER_AMPER | VBAR_VBAR
+#(Looks like: include Server, Client from Networking)
 
 
-equals: EQUALS | PLUS_EQUALS | MINUS_EQUALS | STAR_EQUALS | SLASH_EQUALS | PERCENT_EQUALS | CARET_EQUALS
+# op: arith_op | comp_op
+#
+# arith_op: PLUS | MINUS | STAR | SLASH | PERCENT | CARET
+#
+# comp_op: LESS | GREATER | EQUALS_EQUALS | EXCL_EQUALS | LESS_EQUALS | GREATER_EQUALS | AMPER_AMPER | VBAR_VBAR
+#
+#
+# equals: EQUALS | PLUS_EQUALS | MINUS_EQUALS | STAR_EQUALS | SLASH_EQUALS | PERCENT_EQUALS | CARET_EQUALS
+#
+#
+# prim_type: DOUBLE | INT
+#
+# object_type: LIST | STRING | TUPLE
+#
+# union_type: LESS QUESTION | (type (COMMA type)*) GREATER
+#
+# type: prim_type | object_type | IDENTIFIER | union_type
+#
+#
+# func_call: IDENTIFIER L_PAREN value- (COMMA value)* R_PAREN
+#
+# value: IDENTIFIER | NUMBER | STRING_CONST | tuple_const | list_const | func_call
+#
+# number: NUMBER | IDENTIFIER
+#
+# string: STRING_CONST | IDENTIFIER
+#
+# tuple: tuple_const | IDENTIFIER
+#
+# list: list_const | IDENTIFIER
+#
+#
+# tuple_const: L_PAREN value- (COMMA value)* R_PAREN
+#
+# list_const: L_SQUARE value- (COMMA value)* R_SQUARE
+#
+#
+# expr: arith_expr | comp_expr
+#
+# arith_expr: number (arith_op number)*
+#
+# comp_expr: value (comp_op value)*
+#
+#
+# var_def: type IDENTIFIER (EQUALS expr)-
+#
+# func_def: VOID | type IDENTIFIER L_PAREN var_def- (COMMA var_def)* R_PAREN suite
+#
+#
+# stmt: basic_stmt | compound_stmt | body
+#
+# basic_stmt: assign_stmt | return_stmt
+#
+# compound_stmt: if_stmt
+#
+# body: L_CURLY (stmt SEMICOLON)* R_CURLY
+#
+# suite: (basic_stmt SEMICOLON) | (compound_stmt SEMICOLON) | body
+#
+# assign_stmt: IDENTIFIER equals value
+#
+# return_stmt: RETURN expr
+#
+# typedef_stmt: TYPE IDENTIFIER EQUALS type
+#
+#
+# if_stmt: IF L_PAREN comp_expr R_PAREN suite
+#
+# prog: stmt*
 
+prog: (assign | return)*
 
-prim_type: DOUBLE | INTEGER
+assign: IDENTIFIER EQUALS expr SEMICOLON
 
-object_type: LIST | STRING | TUPLE
+return: RETURN expr SEMICOLON
 
-union_type: LESS QUESTION | (type (COMMA type)*) GREATER
-
-type: prim_type | object_type | IDENTIFIER | union_type
-
-
-value: IDENTIFIER | NUMBER | STRING_CONST | tuple_const | list_const
-
-number: NUMBER | IDENTIFIER
-
-string: STRING_CONST | IDENTIFIER
-
-tuple: tuple_const | IDENTIFIER
-
-list: list_const | IDENTIFIER
-
-
-tuple_const: L_PAREN NUMBER- (COMMA NUMBER)* R_PAREN
-
-list_const: L_SQUARE value- (COMMA value)* R_SQUARE
-
-
-expr: arith_expr | comp_expr
-
-arith_expr: number (arith_op number)*
-
-comp_expr: value (comp_op value)*
-
-
-var_def: type IDENTIFIER (EQUALS expr)-
-
-func_def: type IDENTIFIER L_PAREN var_def- (COMMA var_def)* R_PAREN suite
-
-
-stmt: basic_stmt | compound_stmt
-
-basic_stmt: assign_stmt | return_stmt
-
-compound_stmt: if_stmt
-
-suite: L_CURLY- (stmt SEMICOLON)* R_CURLY-
-
-
-assign_stmt: IDENTIFIER equals value
-
-#call_stmt:
-
-return_stmt: RETURN expr
-
-
-if_stmt: IF L_PAREN comp_expr R_PAREN suite
+expr: NUMBER | IDENTIFIER
